@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pm2/screen/clientes.dart';
+import 'package:pm2/screen/compras.dart';
 import 'package:pm2/screen/empleados.dart';
 import 'package:pm2/screen/ordenes.dart';
 import 'package:pm2/screen/productos.dart';
 import 'package:pm2/screen/proveedores.dart';
+
 
 class menu extends StatelessWidget {
   const menu({Key? key}) : super(key: key);
@@ -66,6 +68,16 @@ class menu extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => empleados()))
+                      }),
+              Text(""),
+              ElevatedButton(
+                  child:
+                      Text("Compras", style: TextStyle(color: Colors.black)),
+                  onPressed: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => compras()))
                       }),
             ],
           ),
