@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ordenes extends StatefulWidget {
   const ordenes({Key? key}) : super(key: key);
@@ -9,20 +10,14 @@ class ordenes extends StatefulWidget {
 
 class _OrdenesState extends State<ordenes> {
   List<Map<String, String>> ordenes = [
-    {"nombre": "Nombre 1", "direccion": "Direccion 1", "codigo": "Código 1"},
-    {"nombre": "Nombre 2", "direccion": "Direccion 2", "codigo": "Código 2"},
-    {"nombre": "Nombre 3", "direccion": "Direccion 3", "codigo": "Código 3"},
-    {"nombre": "Nombre 4", "direccion": "Direccion 4", "codigo": "Código 4"},
-    {"nombre": "Nombre 5", "direccion": "Direccion 5", "codigo": "Código 5"},
-    {"nombre": "Nombre 6", "direccion": "Direccion 6", "codigo": "Código 6"},
-    {"nombre": "Nombre 7", "direccion": "Direccion 7", "codigo": "Código 7"},
-    {"nombre": "Nombre 8", "direccion": "Direccion 8", "codigo": "Código 8"},
-    {"nombre": "Nombre 9", "direccion": "Direccion 9", "codigo": "Código 9"},
-    {"nombre": "Nombre 10", "direccion": "Direccion 10", "codigo": "Código 10"},
+    {"nombre": "Nombre 1", "direccion": "Direccion 1", "codigo": "Código 1", "fecha": "01-01-2024"},
+    {"nombre": "Nombre 2", "direccion": "Direccion 2", "codigo": "Código 2", "fecha": "02-01-2024"},
+    {"nombre": "Nombre 3", "direccion": "Direccion 3", "codigo": "Código 3", "fecha": "03-01-2024"},
   ];
 
   List<Map<String, String>> _ordenesFiltradas = [];
   TextEditingController _searchController = TextEditingController();
+  String _selectedFilter = 'nombre';
 
   @override
   void initState() {
@@ -38,15 +33,22 @@ class _OrdenesState extends State<ordenes> {
     if (_searchController.text.isEmpty) {
       resultados = ordenes;
     } else {
-      resultados = ordenes
-          .where((orden) => orden['nombre']!
-              .toLowerCase()
-              .contains(_searchController.text.toLowerCase()))
-          .toList();
+      resultados = ordenes.where((orden) {
+        return orden[_selectedFilter]!
+            .toLowerCase()
+            .contains(_searchController.text.toLowerCase());
+      }).toList();
     }
 
     setState(() {
       _ordenesFiltradas = resultados;
+    });
+  }
+
+  void _addOrden(Map<String, String> nuevaOrden) {
+    setState(() {
+      ordenes.add(nuevaOrden);
+      _ordenesFiltradas = ordenes;
     });
   }
 
@@ -65,6 +67,7 @@ class _OrdenesState extends State<ordenes> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
+            Navigator.pop(context);
           },
         ),
         actions: [
@@ -77,6 +80,13 @@ class _OrdenesState extends State<ordenes> {
         ],
       ),
       body: ListaOrdenes(ordenes: _ordenesFiltradas),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showAddOrdenDialog(context);
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Color.fromARGB(255, 202, 142, 1),
+      ),
     );
   }
 
@@ -86,14 +96,132 @@ class _OrdenesState extends State<ordenes> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Buscar'),
-          content: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(hintText: "Ingrese el nombre a buscar"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButton<String>(
+                value: _selectedFilter,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedFilter = newValue!;
+                  });
+                  Navigator.of(context).pop();
+                  showSearchDialog(context);
+                },
+                items: <String>['nombre', 'direccion', 'codigo']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value.capitalize()),
+                  );
+                }).toList(),
+              ),
+              TextField(
+                controller: _searchController,
+                decoration: InputDecoration(hintText: "Ingrese ${_selectedFilter} a buscar"),
+              ),
+            ],
           ),
           actions: [
             TextButton(
               child: Text('Cerrar'),
               onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showAddOrdenDialog(BuildContext context) {
+    final TextEditingController nombreController = TextEditingController();
+    final TextEditingController direccionController = TextEditingController();
+    final TextEditingController codigoController = TextEditingController();
+    final TextEditingController diaController = TextEditingController();
+    final TextEditingController mesController = TextEditingController();
+    final TextEditingController anioController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Agregar Orden'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nombreController,
+                decoration: InputDecoration(hintText: "Nombre"),
+              ),
+              TextField(
+                controller: direccionController,
+                decoration: InputDecoration(hintText: "Dirección"),
+              ),
+              TextField(
+                controller: codigoController,
+                decoration: InputDecoration(hintText: "Código"),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: diaController,
+                      decoration: InputDecoration(hintText: "DD"),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(2),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: mesController,
+                      decoration: InputDecoration(hintText: "MM"),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(2),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: TextField(
+                      controller: anioController,
+                      decoration: InputDecoration(hintText: "AAAA"),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Agregar'),
+              onPressed: () {
+                String fecha = "${diaController.text}-${mesController.text}-${anioController.text}";
+                Map<String, String> nuevaOrden = {
+                  "nombre": nombreController.text,
+                  "direccion": direccionController.text,
+                  "codigo": codigoController.text,
+                  "fecha": fecha,
+                };
+                _addOrden(nuevaOrden);
                 Navigator.of(context).pop();
               },
             ),
@@ -120,11 +248,23 @@ class ListaOrdenes extends StatelessWidget {
           child: ListTile(
             title: Text(orden['nombre']!),
             subtitle: Text(orden['direccion']!),
-            trailing: Text(orden['codigo']!),
+            trailing: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(orden['codigo']!),
+                Text(orden['fecha']!),
+              ],
+            ),
           ),
         );
       },
     );
+  }
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return this[0].toUpperCase() + this.substring(1);
   }
 }
 
