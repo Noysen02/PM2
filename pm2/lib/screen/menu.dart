@@ -65,11 +65,10 @@ class menu extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => empleados()))
+                                builder: (context) => Empleados()))
                       }),
             ],
           ),
         ));
   }
 }
-
