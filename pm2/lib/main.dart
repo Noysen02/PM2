@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:pm2/screen/menu.dart';
 
-void main() {
+void main() async {
   runApp(Myapps());
 }
 
