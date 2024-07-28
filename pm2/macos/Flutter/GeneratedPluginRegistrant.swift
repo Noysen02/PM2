@@ -4,6 +4,7 @@
 
 import FlutterMacOS
 import Foundation
+
 import sqflite
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
