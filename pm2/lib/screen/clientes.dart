@@ -303,3 +303,40 @@ class _ClientesPageState extends State<clientes> {
     );
   }
 }
+
+class ListaClientes extends StatelessWidget {
+  final List<Map<String, String>> clientes;
+
+  ListaClientes({required this.clientes});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: clientes.length,
+      itemBuilder: (context, index) {
+        final cliente = clientes[index];
+        return Card(
+          margin: EdgeInsets.all(10),
+          child: ListTile(
+            title: Text(cliente['nombre']!),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text("Dirección: ${cliente['direccion']!}"),
+                Text("Código: ${cliente['codigo']!}"),
+                Text("Email: ${cliente['email']!}"),
+                Text("Número: ${cliente['numero']!}"),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: clientes(),
+  ));
+}
