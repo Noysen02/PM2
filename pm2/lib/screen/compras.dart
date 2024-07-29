@@ -24,14 +24,15 @@ class compras extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 202, 142, 1),
-        title: const Text("Lista de compras"),
+        title: const Text("Inventario"),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SearchBarApp(),
-            const SizedBox(height: 20), // Espacio entre el SearchBar y el DataTable
+            const SizedBox(
+                height: 20), // Espacio entre el SearchBar y el DataTable
             const DataTableExample(),
           ],
         ),
@@ -65,7 +66,7 @@ class _SearchBarAppState extends State<SearchBarApp> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             AppBar(
-              title: const Text('Buscar lista de compras'),
+              title: const Text('Buscar Productos'),
               actions: <Widget>[
                 IconButton(
                   onPressed: () {
@@ -79,7 +80,8 @@ class _SearchBarAppState extends State<SearchBarApp> {
                 ),
               ],
             ),
-            const SizedBox(height: 20), // Espacio entre el AppBar y el SearchBar
+            const SizedBox(
+                height: 20), // Espacio entre el AppBar y el SearchBar
 
             // Aquí colocas tu widget SearchBar personalizado o adaptas el existente
             // dependiendo de cómo esté implementado en tu código original

@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-
-import 'package:pm2/screen/menu.dart';
+import 'package:pm2/screen/login.dart';
 
 void main() async {
-  runApp(Myapps());
+  runApp(MyApp());
 }
 
-//clase statelesswidget
-
-class Myapps extends StatelessWidget {
-  const Myapps({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: menu(),
+      home: LoginScreen(),
     );
   }
 }
