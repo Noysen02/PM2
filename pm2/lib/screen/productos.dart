@@ -79,6 +79,9 @@ class _ProductosState extends State<productos> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Productos'),
+        titleTextStyle: TextStyle(color: Colors.white,
+        fontSize: 20,
+      ),
         backgroundColor: Colors.blueAccent,
       ),
       floatingActionButton: _addTaskButton(),
@@ -97,7 +100,10 @@ class _ProductosState extends State<productos> {
         _showTaskDialog();
       },
       backgroundColor: Colors.blueAccent,
-      child: const Icon(Icons.add),
+      child: const Icon(
+        Icons.add,
+        color: Colors.white,
+      ),
     );
   }
 

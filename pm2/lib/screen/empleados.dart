@@ -58,6 +58,9 @@ class _EmpleadosPageState extends State<empleados> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Empleados'),
+         titleTextStyle: TextStyle(color: Colors.white,
+        fontSize: 20,
+      ),
         backgroundColor: Colors.purple,
       ),
       floatingActionButton: _addEmpleadoButton(),
@@ -97,6 +100,7 @@ class _EmpleadosPageState extends State<empleados> {
       backgroundColor: Colors.purple,
       child: const Icon(
         Icons.add,
+        color: Colors.white,
       ),
     );
   }

@@ -92,6 +92,9 @@ class _ordenesPageState extends State<ordenes> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Órdenes'),
+        titleTextStyle: TextStyle(color: Colors.white,
+        fontSize: 20,
+      ),
         backgroundColor: Colors.green,
       ),
       floatingActionButton: _addOrdenButton(),
@@ -110,7 +113,10 @@ class _ordenesPageState extends State<ordenes> {
         _showOrdenDialog();
       },
       backgroundColor: Colors.green,
-      child: const Icon(Icons.add),
+      child: const Icon(
+        Icons.add,
+        color: Colors.white,
+      ),
     );
   }
 

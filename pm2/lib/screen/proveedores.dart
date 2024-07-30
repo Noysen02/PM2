@@ -76,6 +76,9 @@ class _ProveedoresPageState extends State<proveedores> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Proveedores'),
+         titleTextStyle: TextStyle(color: Colors.white,
+        fontSize: 20,
+      ),
         backgroundColor: Colors.red,
       ),
       floatingActionButton: _addProveedorButton(),
@@ -94,7 +97,10 @@ class _ProveedoresPageState extends State<proveedores> {
         _showProveedorDialog();
       },
       backgroundColor: Colors.red,
-      child: const Icon(Icons.add),
+      child: const Icon(
+        Icons.add,
+        color: Colors.white,
+      ),
     );
   }
 

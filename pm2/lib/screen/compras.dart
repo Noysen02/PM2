@@ -24,6 +24,9 @@ class compras extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.pink,
         title: const Text("Inventario"),
+         titleTextStyle: TextStyle(color: Colors.white,
+        fontSize: 20,
+      ),
       ),
       body: SingleChildScrollView(
         child: Column(

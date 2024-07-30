@@ -79,6 +79,9 @@ class _ClientesPageState extends State<clientes> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Clientes'),
+        titleTextStyle: TextStyle(color: Colors.white,
+        fontSize: 20,
+      ),
         backgroundColor: Colors.orange,
       ),
       floatingActionButton: _addClienteButton(),
@@ -97,7 +100,10 @@ class _ClientesPageState extends State<clientes> {
         _showClienteDialog();
       },
       backgroundColor: Colors.orange,
-      child: const Icon(Icons.add),
+      child: const Icon(
+        Icons.add,
+        color: Colors.white,
+      ),
     );
   }
 
