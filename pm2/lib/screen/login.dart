@@ -42,35 +42,163 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 202, 142, 1),
-        title: const Text("Iniciar sesión"),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage('https://wallpapercave.com/wp/wp9748429.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+
+                Container(
+                  height: 150,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle, 
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.6),
+                        offset: Offset(0, 4),
+                        blurRadius: 20,
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'imagenes/logo.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                
+                _buildTitle("Game Market"),
+                SizedBox(height: 30),
+                
+                _buildTextField(
+                  controller: _usernameController,
+                  labelText: 'Nombre de usuario',
+                  prefixIcon: Icons.person,
+                ),
+                SizedBox(height: 16),
+                _buildTextField(
+                  controller: _passwordController,
+                  labelText: 'Contraseña',
+                  prefixIcon: Icons.lock,
+                  obscureText: true,
+                ),
+                SizedBox(height: 20),
+                
+                ElevatedButton(
+                  onPressed: _login,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text('Iniciar sesión', style: TextStyle(fontSize: 18)),
+                ),
+                SizedBox(height: 20),
+                
+                if (_errorMessage.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      _errorMessage,
+                      style: TextStyle(color: Colors.red, fontSize: 16),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Nombre de usuario'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Contraseña'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('Iniciar sesión'),
-            ),
-            SizedBox(height: 20),
-            Text(
-              _errorMessage,
-              style: TextStyle(color: Colors.red),
-            ),
-          ],
+    );
+  }
+
+  Widget _buildTitle(String title) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 36,
+            fontWeight: FontWeight.bold,
+            color: Colors.white.withOpacity(0.5),
+            shadows: [
+              Shadow(
+                offset: Offset(4, 4),
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 12,
+              ),
+              Shadow(
+                offset: Offset(-4, -4),
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 12,
+              ),
+            ],
+          ),
+        ),
+
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 36,
+            fontWeight: FontWeight.bold,
+            color: Colors.red,
+            shadows: [
+              Shadow(
+                offset: Offset(2, 2),
+                color: Colors.white,
+                blurRadius: 4,
+              ),
+              Shadow(
+                offset: Offset(-2, -2),
+                color: Colors.white,
+                blurRadius: 4,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required IconData prefixIcon,
+    bool obscureText = false,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: labelText,
+        prefixIcon: Icon(prefixIcon, color: Colors.blue),
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.75),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.blue, width: 2),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey, width: 1),
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );

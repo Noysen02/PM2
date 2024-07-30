@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
         // aqui es donde esta para ir al menu
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => menu()),
+          MaterialPageRoute(builder: (context) => Menu()),
         );
       },
       child: const SizedBox(

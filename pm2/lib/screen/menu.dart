@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:pm2/screen/clientes.dart';
 import 'package:pm2/screen/compras.dart';
@@ -15,96 +16,159 @@ class Menu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 7, 255, 234),
+        backgroundColor: Colors.teal,
         title: const Text(
           "MENU",
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            icon: Icon(Icons.logout, color: Colors.white),
+            label: Text(
+              "Cerrar sesión",
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () {
               _logout(context);
             },
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(""),
-            ElevatedButton(
-              child: Text("Productos", style: TextStyle(color: Colors.black)),
-              onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => productos()),
-                )
-              },
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('imagenes/fondo.jpg'),
+                fit: BoxFit.cover,
+              ),
             ),
-            Text(""),
-            ElevatedButton(
-              child: Text("Ordenes", style: TextStyle(color: Colors.black)),
-              onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ordenes()),
-                )
-              },
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+              child: Container(
+                color: Colors.black.withOpacity(0.1),
+              ),
             ),
-            Text(""),
-            ElevatedButton(
-              child: Text("Clientes", style: TextStyle(color: Colors.black)),
-              onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => clientes()),
-                )
-              },
+          ),
+
+          Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildMenuButton(
+                          context,
+                          "Productos",
+                          Icons.production_quantity_limits,
+                          productos(),
+                          Colors.blue,
+                        ),
+                        _buildMenuButton(
+                          context,
+                          "Ordenes",
+                          Icons.list_alt,
+                          ordenes(),
+                          Colors.green,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildMenuButton(
+                          context,
+                          "Clientes",
+                          Icons.people,
+                          clientes(),
+                          Colors.orange,
+                        ),
+                        _buildMenuButton(
+                          context,
+                          "Proveedores",
+                          Icons.local_shipping,
+                          proveedores(),
+                          Colors.red,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildMenuButton(
+                          context,
+                          "Empleados",
+                          Icons.person,
+                          empleados(),
+                          Colors.purple,
+                        ),
+                        _buildMenuButton(
+                          context,
+                          "Compras",
+                          Icons.shopping_cart,
+                          compras(),
+                          Colors.pink,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            Text(""),
-            ElevatedButton(
-              child: Text("Proveedores", style: TextStyle(color: Colors.black)),
-              onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => proveedores()),
-                )
-              },
-            ),
-            Text(""),
-            ElevatedButton(
-              child: Text("Empleados", style: TextStyle(color: Colors.black)),
-              onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => empleados()),
-                )
-              },
-            ),
-            Text(""),
-            ElevatedButton(
-              child: Text("Compras", style: TextStyle(color: Colors.black)),
-              onPressed: () => {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => compras()),
-                )
-              },
-            ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuButton(BuildContext context, String title, IconData icon, Widget destination, Color color) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        minimumSize: Size(150, 150),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
         ),
+        elevation: 5,
+        shadowColor: Colors.white,
+      ),
+      onPressed: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => destination),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 40),
+          SizedBox(height: 10),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18),
+          ),
+        ],
       ),
     );
   }
 
   void _logout(BuildContext context) async {
-    // Borrar datos de usuario de SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
-    // Navegar de vuelta a la pantalla de inicio de sesión y eliminar la ruta actual
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => LoginScreen()),
