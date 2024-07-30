@@ -41,21 +41,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage('https://wallpapercave.com/wp/wp9748429.jpg'),
-            fit: BoxFit.cover,
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 24.0,
+            bottom: 24.0 + keyboardHeight,
           ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+          child: Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage('https://wallpapercave.com/wp/wp9748429.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 Container(
                   height: 150,
                   width: 150,
@@ -112,9 +121,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (_errorMessage.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Text(
-                      _errorMessage,
-                      style: TextStyle(color: Colors.red, fontSize: 16),
+                    child: Container(
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        _errorMessage,
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
               ],
@@ -129,7 +146,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Stack(
       alignment: Alignment.center,
       children: [
-
         Text(
           title,
           style: TextStyle(
@@ -150,7 +166,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-
         Text(
           title,
           style: TextStyle(
