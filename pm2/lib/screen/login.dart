@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage('https://wallpapercave.com/wp/wp9748429.jpg'),
+                image: AssetImage('imagenes/fondologin.png'),
                 fit: BoxFit.cover,
               ),
             ),

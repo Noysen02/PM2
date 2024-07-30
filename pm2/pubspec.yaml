@@ -63,6 +63,7 @@ flutter:
 
   assets:
     - imagenes/fondo.jpg
+    - imagenes/fondologin.png
     - imagenes/logo.png
 
   #Enable code generation for localizations

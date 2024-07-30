@@ -6,17 +6,18 @@ class empleados extends StatefulWidget {
   const empleados({super.key});
 
   @override
-  State<empleados> createState() => _EmpleadosPageState();
+  State<empleados> createState() => _empleadosPageState();
 }
 
-class _EmpleadosPageState extends State<empleados> {
+class _empleadosPageState extends State<empleados> {
   final DatabaseService _databaseService = DatabaseService.instance;
 
   // ignore: unused_field
   int? _empleadoId;
   String? _nombreEmpleado;
-  String? _fechaNacimiento;
+  DateTime? _fechaNacimiento;
   String? _telefono;
+  final TextEditingController _fechaNacimientoController = TextEditingController();
   // ignore: unused_field
   String _searchQuery = '';
   List<Empleado> _empleados = [];
@@ -53,14 +54,27 @@ class _EmpleadosPageState extends State<empleados> {
     });
   }
 
+  Future<void> _selectDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+    if (pickedDate != null && pickedDate != _fechaNacimiento) {
+      setState(() {
+        _fechaNacimiento = pickedDate;
+        _fechaNacimientoController.text = '${_fechaNacimiento!.toLocal()}'.split(' ')[0];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Empleados'),
-         titleTextStyle: TextStyle(color: Colors.white,
-        fontSize: 20,
-      ),
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
         backgroundColor: Colors.purple,
       ),
       floatingActionButton: _addEmpleadoButton(),
@@ -109,7 +123,8 @@ class _EmpleadosPageState extends State<empleados> {
     if (empleado != null) {
       _empleadoId = empleado.id;
       _nombreEmpleado = empleado.nombreEmpleado;
-      _fechaNacimiento = empleado.fechaNacempleado;
+      _fechaNacimiento = DateTime.tryParse(empleado.fechaNacempleado);
+      _fechaNacimientoController.text = _fechaNacimiento == null ? '' : '${_fechaNacimiento!.toLocal()}'.split(' ')[0];
       _telefono = empleado.telefonoempleado;
     }
 
@@ -131,18 +146,21 @@ class _EmpleadosPageState extends State<empleados> {
                 ),
                 controller: TextEditingController(text: _nombreEmpleado),
               ),
-              SizedBox(height: 16.0),
-              TextField(
-                onChanged: (value) {
-                  _fechaNacimiento = value;
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Ingrese la fecha de nacimiento',
+              SizedBox(height: 8.0),
+              GestureDetector(
+                onTap: _selectDate,
+                child: AbsorbPointer(
+                  child: TextField(
+                    controller: _fechaNacimientoController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Seleccione la fecha de nacimiento',
+                      suffixIcon: Icon(Icons.calendar_today),
+                    ),
+                  ),
                 ),
-                controller: TextEditingController(text: _fechaNacimiento),
               ),
-              SizedBox(height: 16.0),
+              SizedBox(height: 8.0),
               TextField(
                 onChanged: (value) {
                   _telefono = value;
@@ -155,23 +173,23 @@ class _EmpleadosPageState extends State<empleados> {
               ),
               SizedBox(height: 16.0),
               MaterialButton(
-                color: Colors.purple, // Color del botón de acción
+                color: Colors.purple,
                 onPressed: () {
                   if (_nombreEmpleado == null || _nombreEmpleado!.isEmpty) return;
-                  if (_fechaNacimiento == null || _fechaNacimiento!.isEmpty) return;
+                  if (_fechaNacimiento == null) return;
                   if (_telefono == null || _telefono!.isEmpty) return;
 
                   if (empleado == null) {
                     _databaseService.addEmpleado(
                       _nombreEmpleado!,
-                      _fechaNacimiento!,
+                      _fechaNacimiento!.toIso8601String(),
                       _telefono!,
                     );
                   } else {
                     _databaseService.updateEmpleado(
                       empleado.id,
                       _nombreEmpleado!,
-                      _fechaNacimiento!,
+                      _fechaNacimiento!.toIso8601String(),
                       _telefono!,
                     );
                   }
@@ -183,6 +201,7 @@ class _EmpleadosPageState extends State<empleados> {
                     _nombreEmpleado = null;
                     _fechaNacimiento = null;
                     _telefono = null;
+                    _fechaNacimientoController.clear();
                   });
 
                   Navigator.pop(context);
@@ -204,6 +223,7 @@ class _EmpleadosPageState extends State<empleados> {
         _nombreEmpleado = null;
         _fechaNacimiento = null;
         _telefono = null;
+        _fechaNacimientoController.clear();
       });
     });
   }
