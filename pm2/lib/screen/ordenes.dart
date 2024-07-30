@@ -246,7 +246,7 @@ class _ordenesPageState extends State<ordenes> {
                     TextButton(
                       onPressed: () {
                         _databaseService.deleteOrden(ordenes.id);
-                        _loadOrdenes(); // Refresh the order list
+                        _loadOrdenes();
                         Navigator.of(context).pop();
                       },
                       child: Text('Eliminar'),
@@ -275,7 +275,7 @@ class _ordenesPageState extends State<ordenes> {
                     color: Colors.green,
                     margin: EdgeInsets.only(right: 16.0),
                     child: Center(
-                      child: Icon(Icons.shopping_cart, color: Colors.white),
+                      child: Icon(Icons.list_alt, color: Colors.white),
                     ),
                   ),
                   Expanded(

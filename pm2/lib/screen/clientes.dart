@@ -11,16 +11,12 @@ class clientes extends StatefulWidget {
 
 class _ClientesPageState extends State<clientes> {
   final DatabaseService _databaseService = DatabaseService.instance;
-
-  // Variables para el diálogo
   // ignore: unused_field
   int? _clienteId;
   String? _nombreCliente;
   String? _direccion;
   String? _email;
   String? _telefono;
-
-  // Variables para la búsqueda
   // ignore: unused_field
   String _searchQuery = '';
   List<Cliente> _clientes = [];
@@ -43,7 +39,6 @@ class _ClientesPageState extends State<clientes> {
   void _filterClientes(String query) {
     final filteredClientes = _clientes.where((cliente) {
       final nombre = cliente.nombreCliente.toLowerCase();
-
       final direccion = cliente.direccionCliente.toLowerCase();
       final email = cliente.emailCliente.toLowerCase();
       final telefono = cliente.telefonoCliente.toLowerCase();
@@ -67,6 +62,9 @@ class _ClientesPageState extends State<clientes> {
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Buscar por nombre, email, dirección o teléfono',
+          prefixIcon: Icon(Icons.search, color: Colors.orange),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.9),
         ),
         onChanged: (query) {
           _searchQuery = query;
@@ -81,6 +79,7 @@ class _ClientesPageState extends State<clientes> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Clientes'),
+        backgroundColor: Colors.orange,
       ),
       floatingActionButton: _addClienteButton(),
       body: Column(
@@ -97,9 +96,8 @@ class _ClientesPageState extends State<clientes> {
       onPressed: () {
         _showClienteDialog();
       },
-      child: const Icon(
-        Icons.add,
-      ),
+      backgroundColor: Colors.orange,
+      child: const Icon(Icons.add),
     );
   }
 
@@ -116,98 +114,103 @@ class _ClientesPageState extends State<clientes> {
       context: context,
       builder: (_) => AlertDialog(
         title: Text(cliente == null ? 'Agregar Cliente' : 'Actualizar Cliente'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              onChanged: (value) {
-                _nombreCliente = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese nombre del cliente',
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  _nombreCliente = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese nombre del cliente',
+                ),
+                controller: TextEditingController(text: _nombreCliente),
               ),
-              controller: TextEditingController(text: _nombreCliente),
-            ),
-            TextField(
-              onChanged: (value) {
-                _direccion = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese la dirección',
+              SizedBox(height: 8.0),
+              TextField(
+                onChanged: (value) {
+                  _direccion = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese la dirección',
+                ),
+                controller: TextEditingController(text: _direccion),
               ),
-              controller: TextEditingController(text: _direccion),
-            ),
-            TextField(
-              onChanged: (value) {
-                _email = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese el email',
+              SizedBox(height: 8.0),
+              TextField(
+                onChanged: (value) {
+                  _email = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese el email',
+                ),
+                controller: TextEditingController(text: _email),
               ),
-              controller: TextEditingController(text: _email),
-            ),
-            TextField(
-              onChanged: (value) {
-                _telefono = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese el teléfono',
+              SizedBox(height: 8.0),
+              TextField(
+                onChanged: (value) {
+                  _telefono = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese el teléfono',
+                ),
+                controller: TextEditingController(text: _telefono),
               ),
-              controller: TextEditingController(text: _telefono),
-            ),
-            MaterialButton(
-              color: Theme.of(context).colorScheme.primary,
-              onPressed: () {
-                if (_nombreCliente == null || _nombreCliente!.isEmpty) return;
-                if (_direccion == null || _direccion!.isEmpty) return;
-                if (_email == null || _email!.isEmpty) return;
-                if (_telefono == null || _telefono!.isEmpty) return;
+              SizedBox(height: 16.0),
+              MaterialButton(
+                color: Colors.orange,
+                onPressed: () {
+                  if (_nombreCliente == null || _nombreCliente!.isEmpty) return;
+                  if (_direccion == null || _direccion!.isEmpty) return;
+                  if (_email == null || _email!.isEmpty) return;
+                  if (_telefono == null || _telefono!.isEmpty) return;
 
-                if (cliente == null) {
-                  _databaseService.addCliente(
-                    _nombreCliente!,
-                    _direccion!,
-                    _email!,
-                    _telefono!,
-                  );
-                } else {
-                  _databaseService.updateCliente(
-                    cliente.id,
-                    _nombreCliente!,
-                    _direccion!,
-                    _email!,
-                    _telefono!,
-                  );
-                }
+                  if (cliente == null) {
+                    _databaseService.addCliente(
+                      _nombreCliente!,
+                      _direccion!,
+                      _email!,
+                      _telefono!,
+                    );
+                  } else {
+                    _databaseService.updateCliente(
+                      cliente.id,
+                      _nombreCliente!,
+                      _direccion!,
+                      _email!,
+                      _telefono!,
+                    );
+                  }
 
-                _loadClientes();
+                  _loadClientes();
 
-                setState(() {
-                  _clienteId = null;
-                  _nombreCliente = null;
-                  _direccion = null;
-                  _email = null;
-                  _telefono = null;
-                });
+                  setState(() {
+                    _clienteId = null;
+                    _nombreCliente = null;
+                    _direccion = null;
+                    _email = null;
+                    _telefono = null;
+                  });
 
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Hecho",
-                style: TextStyle(
-                  color: Colors.white,
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Hecho",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ).then((_) {
-      // Reset form values after closing dialog
       setState(() {
         _clienteId = null;
         _nombreCliente = null;
@@ -229,9 +232,8 @@ class _ClientesPageState extends State<clientes> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('Eliminar empleado'),
-                  content: Text(
-                      '¿Estás seguro de que deseas eliminar este empleado?'),
+                  title: Text('Eliminar cliente'),
+                  content: Text('¿Estás seguro de que deseas eliminar este cliente?'),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () {
@@ -242,7 +244,7 @@ class _ClientesPageState extends State<clientes> {
                     TextButton(
                       onPressed: () {
                         _databaseService.deleteCliente(cliente.id);
-                        _loadClientes(); // Refresh the employee list
+                        _loadClientes();
                         Navigator.of(context).pop();
                       },
                       child: Text('Eliminar'),
@@ -257,6 +259,10 @@ class _ClientesPageState extends State<clientes> {
           },
           child: Card(
             margin: EdgeInsets.all(10),
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -264,69 +270,50 @@ class _ClientesPageState extends State<clientes> {
                   Container(
                     width: 50.0,
                     height: 50.0,
-                    color: Colors.grey[300],
+                    color: Colors.orange,
                     margin: EdgeInsets.only(right: 16.0),
                     child: Center(
-                      child: Text('Imagen'),
+                      child: Icon(Icons.people, color: Colors.white),
                     ),
                   ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Text(
-                              cliente.nombreCliente,
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          cliente.nombreCliente,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
                         ),
                         SizedBox(height: 8.0),
-                        Text('Dirección: ${cliente.direccionCliente}'),
+                        Text(
+                          'Dirección: ${cliente.direccionCliente}',
+                          style: TextStyle(
+                            color: Colors.black87,
+                          ),
+                        ),
                         SizedBox(height: 8.0),
-                        Text('Email: ${cliente.emailCliente}'),
+                        Text(
+                          'Email: ${cliente.emailCliente}',
+                          style: TextStyle(
+                            color: Colors.black54,
+                          ),
+                        ),
                         SizedBox(height: 8.0),
-                        Text('Teléfono: ${cliente.telefonoCliente}'),
+                        Text(
+                          'Teléfono: ${cliente.telefonoCliente}',
+                          style: TextStyle(
+                            color: Colors.black54,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class ListaClientes extends StatelessWidget {
-  final List<Map<String, String>> clientes;
-
-  ListaClientes({required this.clientes});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: clientes.length,
-      itemBuilder: (context, index) {
-        final cliente = clientes[index];
-        return Card(
-          margin: EdgeInsets.all(10),
-          child: ListTile(
-            title: Text(cliente['nombre']!),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text("Dirección: ${cliente['direccion']!}"),
-                Text("Código: ${cliente['codigo']!}"),
-                Text("Email: ${cliente['email']!}"),
-                Text("Número: ${cliente['numero']!}"),
-              ],
             ),
           ),
         );

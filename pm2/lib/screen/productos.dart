@@ -11,15 +11,12 @@ class productos extends StatefulWidget {
 
 class _ProductosState extends State<productos> {
   final DatabaseService _databaseService = DatabaseService.instance;
-
   // ignore: unused_field
   int? _task;
   String? _nombreProducto;
   String? _descripcion;
   String? _categoria;
   dynamic _cantidad;
-
-  // Variables para la búsqueda
   // ignore: unused_field
   String _searchQuery = '';
   List<Task> _productos = [];
@@ -64,7 +61,10 @@ class _ProductosState extends State<productos> {
       child: TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          hintText: 'Buscar por nombre, dirección o fecha',
+          hintText: 'Buscar por nombre, descripción, categoría o cantidad',
+          prefixIcon: Icon(Icons.search, color: Colors.blueAccent),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.9),
         ),
         onChanged: (query) {
           _searchQuery = query;
@@ -77,13 +77,18 @@ class _ProductosState extends State<productos> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Productos'),
-        ),
-        floatingActionButton: _addTaskButton(),
-        body: Column(
-          children: [_searchBar(), Expanded(child: _taskList())],
-        ));
+      appBar: AppBar(
+        title: Text('Productos'),
+        backgroundColor: Colors.blueAccent,
+      ),
+      floatingActionButton: _addTaskButton(),
+      body: Column(
+        children: [
+          _searchBar(),
+          Expanded(child: _taskList()),
+        ],
+      ),
+    );
   }
 
   Widget _addTaskButton() {
@@ -91,9 +96,8 @@ class _ProductosState extends State<productos> {
       onPressed: () {
         _showTaskDialog();
       },
-      child: const Icon(
-        Icons.add,
-      ),
+      backgroundColor: Colors.blueAccent,
+      child: const Icon(Icons.add),
     );
   }
 
@@ -110,89 +114,94 @@ class _ProductosState extends State<productos> {
       context: context,
       builder: (_) => AlertDialog(
         title: Text(task == null ? 'Agregar Producto' : 'Actualizar Producto'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              onChanged: (value) {
-                _nombreProducto = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese nombre del producto',
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  _nombreProducto = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese nombre del producto',
+                ),
+                controller: TextEditingController(text: _nombreProducto),
               ),
-              controller: TextEditingController(text: _nombreProducto),
-            ),
-            TextField(
-              onChanged: (value) {
-                _descripcion = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese la descripción',
+              SizedBox(height: 8.0),
+              TextField(
+                onChanged: (value) {
+                  _descripcion = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese la descripción',
+                ),
+                controller: TextEditingController(text: _descripcion),
               ),
-              controller: TextEditingController(text: _descripcion),
-            ),
-            TextField(
-              onChanged: (value) {
-                _categoria = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese la categoría',
+              SizedBox(height: 8.0),
+              TextField(
+                onChanged: (value) {
+                  _categoria = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese la categoría',
+                ),
+                controller: TextEditingController(text: _categoria),
               ),
-              controller: TextEditingController(text: _categoria),
-            ),
-            TextField(
-              onChanged: (value) {
-                _cantidad = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese la cantidad',
+              SizedBox(height: 8.0),
+              TextField(
+                onChanged: (value) {
+                  _cantidad = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese la cantidad',
+                ),
+                controller: TextEditingController(text: _cantidad?.toString()),
               ),
-              controller: TextEditingController(text: _cantidad?.toString()),
-            ),
-            MaterialButton(
-              color: Theme.of(context).colorScheme.primary,
-              onPressed: () {
-                if (_nombreProducto == null || _nombreProducto!.isEmpty) return;
-                if (_descripcion == null || _descripcion!.isEmpty) return;
-                if (_categoria == null || _categoria!.isEmpty) return;
-                if (_cantidad == null) return;
+              SizedBox(height: 16.0),
+              MaterialButton(
+                color: Colors.blueAccent,
+                onPressed: () {
+                  if (_nombreProducto == null || _nombreProducto!.isEmpty) return;
+                  if (_descripcion == null || _descripcion!.isEmpty) return;
+                  if (_categoria == null || _categoria!.isEmpty) return;
+                  if (_cantidad == null) return;
 
-                if (task == null) {
-                  _databaseService.addTask(
-                      _nombreProducto!, _descripcion!, _categoria!, _cantidad!);
-                } else {
-                  _databaseService.updateTask(task.id, _nombreProducto!,
-                      _descripcion!, _categoria!, _cantidad!);
-                }
+                  if (task == null) {
+                    _databaseService.addTask(
+                        _nombreProducto!, _descripcion!, _categoria!, _cantidad!);
+                  } else {
+                    _databaseService.updateTask(task.id, _nombreProducto!,
+                        _descripcion!, _categoria!, _cantidad!);
+                  }
 
-                _loadProducto();
+                  _loadProducto();
 
-                setState(() {
-                  _task = null;
-                  _nombreProducto = null;
-                  _descripcion = null;
-                  _categoria = null;
-                  _cantidad = null;
-                });
+                  setState(() {
+                    _task = null;
+                    _nombreProducto = null;
+                    _descripcion = null;
+                    _categoria = null;
+                    _cantidad = null;
+                  });
 
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Hecho",
-                style: TextStyle(
-                  color: Colors.white,
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Hecho",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ).then((_) {
-      // Reset form values after closing dialog
       setState(() {
         _task = null;
         _nombreProducto = null;
@@ -215,8 +224,7 @@ class _ProductosState extends State<productos> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text('Eliminar producto'),
-                  content: Text(
-                      '¿Estás seguro de que deseas eliminar este producto?'),
+                  content: Text('¿Estás seguro de que deseas eliminar este producto?'),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () {
@@ -227,7 +235,7 @@ class _ProductosState extends State<productos> {
                     TextButton(
                       onPressed: () {
                         _databaseService.deleteTask(task.id);
-                        _loadProducto(); // Refresh the provider list
+                        _loadProducto();
                         Navigator.of(context).pop();
                       },
                       child: Text('Eliminar'),
@@ -242,6 +250,10 @@ class _ProductosState extends State<productos> {
           },
           child: Card(
             margin: EdgeInsets.all(10),
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -249,10 +261,13 @@ class _ProductosState extends State<productos> {
                   Container(
                     width: 50.0,
                     height: 50.0,
-                    color: Colors.grey[300],
+                    color: Colors.blueAccent,
                     margin: EdgeInsets.only(right: 16.0),
                     child: Center(
-                      child: Text('Imagen'),
+                      child: Icon(
+                        Icons.production_quantity_limits,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   Expanded(

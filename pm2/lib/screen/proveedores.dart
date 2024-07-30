@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pm2/services/database_service.dart';
-import 'package:pm2/models/task.dart'; // Asegúrate de que esta importación sea correcta
+import 'package:pm2/models/task.dart';
 
 class proveedores extends StatefulWidget {
   const proveedores({super.key});
@@ -11,15 +11,11 @@ class proveedores extends StatefulWidget {
 
 class _ProveedoresPageState extends State<proveedores> {
   final DatabaseService _databaseService = DatabaseService.instance;
-
-  // Variables para el diálogo
   // ignore: unused_field
   int? _proveedorId;
   String? _nombreProveedor;
   String? _direccionProveedor;
   String? _telefonoProveedor;
-
-  // Variables para la búsqueda
   // ignore: unused_field
   String _searchQuery = '';
   List<Proveedores> _proveedores = [];
@@ -63,6 +59,9 @@ class _ProveedoresPageState extends State<proveedores> {
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Buscar por nombre, dirección o teléfono',
+          prefixIcon: Icon(Icons.search, color: Colors.red),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.9),
         ),
         onChanged: (query) {
           _searchQuery = query;
@@ -77,6 +76,7 @@ class _ProveedoresPageState extends State<proveedores> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Proveedores'),
+        backgroundColor: Colors.red,
       ),
       floatingActionButton: _addProveedorButton(),
       body: Column(
@@ -93,6 +93,7 @@ class _ProveedoresPageState extends State<proveedores> {
       onPressed: () {
         _showProveedorDialog();
       },
+      backgroundColor: Colors.red,
       child: const Icon(Icons.add),
     );
   }
@@ -107,90 +108,94 @@ class _ProveedoresPageState extends State<proveedores> {
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => AlertDialog(
-        title: Text(
-            proveedor == null ? 'Agregar Proveedor' : 'Actualizar Proveedor'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              onChanged: (value) {
-                _nombreProveedor = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese nombre del proveedor',
+        title: Text(proveedor == null ? 'Agregar Proveedor' : 'Actualizar Proveedor'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  _nombreProveedor = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese nombre del proveedor',
+                ),
+                controller: TextEditingController(text: _nombreProveedor),
               ),
-              controller: TextEditingController(text: _nombreProveedor),
-            ),
-            TextField(
-              onChanged: (value) {
-                _direccionProveedor = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese la dirección',
+              SizedBox(height: 8.0),
+              TextField(
+                onChanged: (value) {
+                  _direccionProveedor = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese la dirección',
+                ),
+                controller: TextEditingController(text: _direccionProveedor),
               ),
-              controller: TextEditingController(text: _direccionProveedor),
-            ),
-            TextField(
-              onChanged: (value) {
-                _telefonoProveedor = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese el teléfono',
+              SizedBox(height: 8.0),
+              TextField(
+                onChanged: (value) {
+                  _telefonoProveedor = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese el teléfono',
+                ),
+                controller: TextEditingController(text: _telefonoProveedor),
               ),
-              controller: TextEditingController(text: _telefonoProveedor),
-            ),
-            MaterialButton(
-              color: Theme.of(context).colorScheme.primary,
-              onPressed: () {
-                if (_nombreProveedor == null || _nombreProveedor!.isEmpty)
-                  return;
-                if (_direccionProveedor == null || _direccionProveedor!.isEmpty)
-                  return;
-                if (_telefonoProveedor == null || _telefonoProveedor!.isEmpty)
-                  return;
+              SizedBox(height: 16.0),
+              MaterialButton(
+                color: Colors.red,
+                onPressed: () {
+                  if (_nombreProveedor == null || _nombreProveedor!.isEmpty)
+                    return;
+                  if (_direccionProveedor == null || _direccionProveedor!.isEmpty)
+                    return;
+                  if (_telefonoProveedor == null || _telefonoProveedor!.isEmpty)
+                    return;
 
-                if (proveedor == null) {
-                  _databaseService.addProveedor(
-                    _nombreProveedor!,
-                    _direccionProveedor!,
-                    _telefonoProveedor!,
-                  );
-                } else {
-                  _databaseService.updateProveedor(
-                    proveedor.idproveedores,
-                    _nombreProveedor!,
-                    _direccionProveedor!,
-                    _telefonoProveedor!,
-                  );
-                }
+                  if (proveedor == null) {
+                    _databaseService.addProveedor(
+                      _nombreProveedor!,
+                      _direccionProveedor!,
+                      _telefonoProveedor!,
+                    );
+                  } else {
+                    _databaseService.updateProveedor(
+                      proveedor.idproveedores,
+                      _nombreProveedor!,
+                      _direccionProveedor!,
+                      _telefonoProveedor!,
+                    );
+                  }
 
-                _loadProveedores(); // Refresh the provider list
+                  _loadProveedores();
 
-                setState(() {
-                  _proveedorId = null;
-                  _nombreProveedor = null;
-                  _direccionProveedor = null;
-                  _telefonoProveedor = null;
-                });
+                  setState(() {
+                    _proveedorId = null;
+                    _nombreProveedor = null;
+                    _direccionProveedor = null;
+                    _telefonoProveedor = null;
+                  });
 
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Hecho",
-                style: TextStyle(
-                  color: Colors.white,
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Hecho",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ).then((_) {
-      // Reset form values after closing dialog
       setState(() {
         _proveedorId = null;
         _nombreProveedor = null;
@@ -225,7 +230,7 @@ class _ProveedoresPageState extends State<proveedores> {
                       onPressed: () {
                         _databaseService
                             .deleteProveedor(proveedor.idproveedores);
-                        _loadProveedores(); // Refresh the provider list
+                        _loadProveedores();
                         Navigator.of(context).pop();
                       },
                       child: Text('Eliminar'),
@@ -240,20 +245,52 @@ class _ProveedoresPageState extends State<proveedores> {
           },
           child: Card(
             margin: EdgeInsets.all(10),
-            child: ListTile(
-              leading: Icon(Icons.business),
-              title: Text(
-                proveedor.nombreprov,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Dirección: ${proveedor.direccionprov}'),
-                  Text('Teléfono: ${proveedor.telefonoprov}')
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    width: 50.0,
+                    height: 50.0,
+                    color: Colors.red,
+                    margin: EdgeInsets.only(right: 16.0),
+                    child: Center(
+                      child: Icon(Icons.local_shipping, color: Colors.white),
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          proveedor.nombreprov,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Dirección: ${proveedor.direccionprov}',
+                          style: TextStyle(
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text(
+                          'Teléfono: ${proveedor.telefonoprov}',
+                          style: TextStyle(
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

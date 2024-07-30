@@ -9,7 +9,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Configuración inicial de la aplicación con MaterialApp
     return MaterialApp(
       home: const compras(),
     );
@@ -23,7 +22,7 @@ class compras extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 202, 142, 1),
+        backgroundColor: Colors.pink,
         title: const Text("Inventario"),
       ),
       body: SingleChildScrollView(
@@ -31,8 +30,7 @@ class compras extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SearchBarApp(),
-            const SizedBox(
-                height: 20), // Espacio entre el SearchBar y el DataTable
+            const SizedBox(height: 20),
             const DataTableExample(),
           ],
         ),
@@ -80,17 +78,13 @@ class _SearchBarAppState extends State<SearchBarApp> {
                 ),
               ],
             ),
-            const SizedBox(
-                height: 20), // Espacio entre el AppBar y el SearchBar
-
-            // Aquí colocas tu widget SearchBar personalizado o adaptas el existente
-            // dependiendo de cómo esté implementado en tu código original
+            const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Buscar...',
-                  prefixIcon: const Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.shopping_cart),
                   border: OutlineInputBorder(),
                 ),
               ),

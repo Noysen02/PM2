@@ -12,14 +12,11 @@ class empleados extends StatefulWidget {
 class _EmpleadosPageState extends State<empleados> {
   final DatabaseService _databaseService = DatabaseService.instance;
 
-  // Variables para el diálogo
   // ignore: unused_field
   int? _empleadoId;
   String? _nombreEmpleado;
   String? _fechaNacimiento;
   String? _telefono;
-
-  // Variable para la búsqueda
   // ignore: unused_field
   String _searchQuery = '';
   List<Empleado> _empleados = [];
@@ -61,6 +58,7 @@ class _EmpleadosPageState extends State<empleados> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Empleados'),
+        backgroundColor: Colors.purple,
       ),
       floatingActionButton: _addEmpleadoButton(),
       body: Column(
@@ -79,6 +77,9 @@ class _EmpleadosPageState extends State<empleados> {
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Buscar por nombre, fecha de nacimiento o teléfono',
+          prefixIcon: Icon(Icons.search, color: Colors.purple),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.9),
         ),
         onChanged: (query) {
           _searchQuery = query;
@@ -93,6 +94,7 @@ class _EmpleadosPageState extends State<empleados> {
       onPressed: () {
         _showEmpleadoDialog();
       },
+      backgroundColor: Colors.purple,
       child: const Icon(
         Icons.add,
       ),
@@ -110,83 +112,86 @@ class _EmpleadosPageState extends State<empleados> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title:
-            Text(empleado == null ? 'Agregar Empleado' : 'Actualizar Empleado'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              onChanged: (value) {
-                _nombreEmpleado = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese nombre del empleado',
+        title: Text(empleado == null ? 'Agregar Empleado' : 'Actualizar Empleado'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  _nombreEmpleado = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese nombre del empleado',
+                ),
+                controller: TextEditingController(text: _nombreEmpleado),
               ),
-              controller: TextEditingController(text: _nombreEmpleado),
-            ),
-            TextField(
-              onChanged: (value) {
-                _fechaNacimiento = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese la fecha de nacimiento',
+              SizedBox(height: 16.0),
+              TextField(
+                onChanged: (value) {
+                  _fechaNacimiento = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese la fecha de nacimiento',
+                ),
+                controller: TextEditingController(text: _fechaNacimiento),
               ),
-              controller: TextEditingController(text: _fechaNacimiento),
-            ),
-            TextField(
-              onChanged: (value) {
-                _telefono = value;
-              },
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingrese el teléfono',
+              SizedBox(height: 16.0),
+              TextField(
+                onChanged: (value) {
+                  _telefono = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Ingrese el teléfono',
+                ),
+                controller: TextEditingController(text: _telefono),
               ),
-              controller: TextEditingController(text: _telefono),
-            ),
-            MaterialButton(
-              color: Theme.of(context).colorScheme.primary,
-              onPressed: () {
-                if (_nombreEmpleado == null || _nombreEmpleado!.isEmpty) return;
-                if (_fechaNacimiento == null || _fechaNacimiento!.isEmpty)
-                  return;
-                if (_telefono == null || _telefono!.isEmpty) return;
+              SizedBox(height: 16.0),
+              MaterialButton(
+                color: Colors.purple, // Color del botón de acción
+                onPressed: () {
+                  if (_nombreEmpleado == null || _nombreEmpleado!.isEmpty) return;
+                  if (_fechaNacimiento == null || _fechaNacimiento!.isEmpty) return;
+                  if (_telefono == null || _telefono!.isEmpty) return;
 
-                if (empleado == null) {
-                  _databaseService.addEmpleado(
-                    _nombreEmpleado!,
-                    _fechaNacimiento!,
-                    _telefono!,
-                  );
-                } else {
-                  _databaseService.updateEmpleado(
-                    empleado.id,
-                    _nombreEmpleado!,
-                    _fechaNacimiento!,
-                    _telefono!,
-                  );
-                }
+                  if (empleado == null) {
+                    _databaseService.addEmpleado(
+                      _nombreEmpleado!,
+                      _fechaNacimiento!,
+                      _telefono!,
+                    );
+                  } else {
+                    _databaseService.updateEmpleado(
+                      empleado.id,
+                      _nombreEmpleado!,
+                      _fechaNacimiento!,
+                      _telefono!,
+                    );
+                  }
 
-                _loadEmpleados(); // Refresh the employee list
+                  _loadEmpleados();
 
-                setState(() {
-                  _empleadoId = null;
-                  _nombreEmpleado = null;
-                  _fechaNacimiento = null;
-                  _telefono = null;
-                });
+                  setState(() {
+                    _empleadoId = null;
+                    _nombreEmpleado = null;
+                    _fechaNacimiento = null;
+                    _telefono = null;
+                  });
 
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Hecho",
-                style: TextStyle(
-                  color: Colors.white,
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "Hecho",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     ).then((_) {
@@ -211,8 +216,7 @@ class _EmpleadosPageState extends State<empleados> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text('Eliminar empleado'),
-                  content: Text(
-                      '¿Estás seguro de que deseas eliminar este empleado?'),
+                  content: Text('¿Estás seguro de que deseas eliminar este empleado?'),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () {
@@ -223,7 +227,7 @@ class _EmpleadosPageState extends State<empleados> {
                     TextButton(
                       onPressed: () {
                         _databaseService.deleteEmpleado(empleado.id);
-                        _loadEmpleados(); // Refresh the employee list
+                        _loadEmpleados();
                         Navigator.of(context).pop();
                       },
                       child: Text('Eliminar'),
@@ -238,13 +242,17 @@ class _EmpleadosPageState extends State<empleados> {
           },
           child: Card(
             margin: EdgeInsets.all(10),
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: <Widget>[
                   CircleAvatar(
-                    backgroundColor: Colors.grey[300],
-                    child: Icon(Icons.person),
+                    backgroundColor: Colors.purple,
+                    child: Icon(Icons.person, color: Colors.white),
                   ),
                   SizedBox(width: 16.0),
                   Expanded(
@@ -258,13 +266,13 @@ class _EmpleadosPageState extends State<empleados> {
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.purple,
                               ),
                             ),
                           ],
                         ),
                         SizedBox(height: 8.0),
-                        Text(
-                            'Fecha de Nacimiento: ${empleado.fechaNacempleado}'),
+                        Text('Fecha de Nacimiento: ${empleado.fechaNacempleado}'),
                         SizedBox(height: 8.0),
                         Text('Teléfono: ${empleado.telefonoempleado}'),
                       ],
